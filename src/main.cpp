@@ -24,10 +24,6 @@ void processInput(GLFWwindow* window) {
     if (glfwGetKey(window,GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window,true);
     }
-    
-    float currentFrame = glfwGetTime();
-    deltaTime = currentFrame - lastFrame;
-    lastFrame = currentFrame;
 
     const float cameraSpeed = 2.5f * deltaTime; //adjust accordingly
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
@@ -43,6 +39,54 @@ void processInput(GLFWwindow* window) {
         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
     }
 }
+
+
+float lastX = 400, lastY = 300;
+float yaw, pitch;
+bool firstMouse = true;
+
+void mouse_callback(GLFWwindow* window, double xpos,double ypos) {
+    if (firstMouse) {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+    
+    float xoffset = xpos - lastX;
+    float yoffset = lastY - ypos;
+    lastX = xpos;
+    lastY = ypos;
+
+    const float sensitivity = 0.1f;
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
+    yaw += xoffset;
+    pitch += yoffset;
+
+    if(pitch > 89.0f)
+        pitch = 89.0f;
+    if(pitch <-89.0f)
+        pitch =-89.0f;
+
+    glm::vec3 direction;
+    direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    direction.y = sin(glm::radians(pitch));
+    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    cameraFront = glm::normalize(direction);
+};
+
+//zooming 
+float Zoom =45.0f;
+void scroll_callback(GLFWwindow * window, double xoffset, double yoffset) {
+    Zoom -= (float)yoffset;
+    if (Zoom < 1.0f)
+        Zoom = 1.0f;
+    if (Zoom > 45.0f)
+        Zoom = 45.0f;
+    
+}
+
 
 int main () {
     glfwInit();
@@ -65,24 +109,49 @@ int main () {
 
     glViewport(0, 0, 800, 600);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
+    glEnable(GL_DEPTH_TEST);
 
     Shader ourShader("C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\shaders\\vertex.vs","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\shaders\\fragment.fss");
-    Planet Sun("Sun","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\sunmap.jpg",0.4f,0.0f,0.2f,0.2f,nullptr,ourShader.ID);
-    Planet Earth("Earth","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\earthmap1k.jpg",0.2f,2.0f,0.3f,0.2f,nullptr,ourShader.ID);
+    Planet Sun("Sun","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\sunmap.jpg",2.0f,0.0f,0.0f,2.0f,nullptr,ourShader.ID);
+    Planet Mercury("Mercury","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\mercurymap.jpg",0.4f,4.0f,10.0f,5.0f,&Sun,ourShader.ID);
+    Planet Venus("Venus","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\venusmap.jpg",0.8f,8.0f,8.0f,10.0f,&Sun,ourShader.ID);
+    Planet Earth("Earth","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\earthmap1k.jpg",1.4f,12.0f,6.0f,15.0f,&Sun,ourShader.ID);
+    Planet Moon("Moon","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\venusmap.jpg",0.2f,4.0f,8.0f,10.0f,&Earth,ourShader.ID);
 
     while(!glfwWindowShouldClose(window)) {
+        float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
         processInput(window);
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        glfwSetCursorPosCallback(window, mouse_callback);
+        glfwSetScrollCallback(window, scroll_callback);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glm::mat4 view; 
         view = glm::lookAt(cameraPos, cameraPos + cameraFront,cameraUp);
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f); 
+        glm::mat4 projection = glm::perspective(glm::radians(Zoom), 800.0f / 600.0f, 0.1f, 100.0f); 
+
+        Sun.UpdatePosition(deltaTime);
+        Mercury.UpdatePosition(deltaTime);
+        Venus.UpdatePosition(deltaTime);
+        Earth.UpdatePosition(deltaTime);
+        Moon.UpdatePosition(deltaTime);
+
+        Sun.UpdateRotation(deltaTime);
+        Mercury.UpdateRotation(deltaTime);
+        Venus.UpdateRotation(deltaTime); 
+        Earth.UpdateRotation(deltaTime);
+        Moon.UpdateRotation(deltaTime);
 
         Sun.Draw(view, projection);
+        Mercury.Draw(view, projection);
+        Venus.Draw(view,projection);
         Earth.Draw(view, projection);
+        Moon.Draw(view, projection);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
