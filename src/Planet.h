@@ -34,4 +34,6 @@ class Planet {
     void Draw(glm::mat4 view, glm::mat4 projection);
     void LoadTexture();
     void Orbit(float orbitAngle, float rotationAngle);
+    void UpdateRotation(float deltaTime);
+    void UpdatePosition(float deltaTime);
 };

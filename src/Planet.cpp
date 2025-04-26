@@ -6,7 +6,7 @@ Planet::Planet(string name,const char* texturePath, float size, float orbitRadiu
     this->size = size;
     this->orbitRadius = orbitRadius;
     this->orbitSpeed = orbitSpeed;
-    this->rotationSpeed =rotationSpeed;
+    this->rotationSpeed = rotationSpeed;
     this->parent = parent;
     this->shaderID = shaderID;
     
@@ -99,4 +99,28 @@ void Planet::LoadTexture() {
         cout << "Failed to load texture1" << endl; 
     } 
     stbi_image_free(data); 
+}
+
+void Planet::Orbit(float orbitAngle, float rotationAngle) {
+
+}
+
+void Planet::UpdateRotation(float deltaTime) {
+    rotationAngle += rotationSpeed * deltaTime;
+    if (rotationAngle >= 360.0f) rotationAngle -= 360.0f;
+}
+
+void Planet::UpdatePosition(float deltaTime) {  
+    orbitAngle += orbitSpeed * deltaTime;
+    if (orbitAngle >= 360.0f) {
+        orbitAngle -= 360.0f;
+    }
+
+    if (parent) {
+        glm::vec3 parentPos = parent->position;
+        position.x = parentPos.x + orbitRadius * cos(glm::radians(orbitAngle));
+        position.y = parentPos.y;
+        position.z = parentPos.z + orbitRadius * sin(glm::radians(orbitAngle));
+    }
+
 }
