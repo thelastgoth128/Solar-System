@@ -31,7 +31,7 @@ class Planet {
     public:
     Planet(string name,const char* texturePath, float size, float orbitRadius, float orbitSpeed, float rotationSpeed, Planet* parent,GLuint shaderID);
     ~Planet();
-    void Draw();
+    void Draw(glm::mat4 view, glm::mat4 projection);
     void LoadTexture();
     void Orbit(float orbitAngle, float rotationAngle);
 };
