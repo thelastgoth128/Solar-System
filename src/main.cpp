@@ -6,6 +6,15 @@
 
 using namespace std;
 
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+    glViewport(0, 0, width, height);
+}
+
+void processInput(GLFWwindow* window) {
+    if (glfwGetKey(window,GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window,true);
+    }
+}
 
 int main () {
     glfwInit();
@@ -27,13 +36,15 @@ int main () {
     }
 
     glViewport(0, 0, 800, 600);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 
     Shader ourShader("C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\shaders\\vertex.vs","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\shaders\\fragment.fss");
-    Planet Sun("Sun","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\sunmap.jpg",1.0f,0.0f,0.2f,0.2f,nullptr,ourShader.ID);
-    Planet Earth("Earth","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\earthmap1k.jpg",0.4f,1.0f,0.3f,0.2f,nullptr,ourShader.ID);
+    Planet Sun("Sun","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\sunmap.jpg",0.4f,0.0f,0.2f,0.2f,nullptr,ourShader.ID);
+    Planet Earth("Earth","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\earthmap1k.jpg",0.2f,2.0f,0.3f,0.2f,nullptr,ourShader.ID);
 
     while(!glfwWindowShouldClose(window)) {
+        processInput(window);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
