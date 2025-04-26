@@ -65,9 +65,9 @@ void Planet::Draw() {
     glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
     glm::mat4 model = glm::mat4(1.0f); 
-    model = glm::translate(model, glm::vec3(0.0f,0.0f,0.0f)); 
-    model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f)); 
-    model = glm::scale(model, glm::vec3(0.2f));
+    model = glm::translate(model, glm::vec3(position)); 
+    model = glm::rotate(model, glm::radians(rotationAngle), glm::vec3(0.0f, 1.0f, 0.0f)); 
+    model = glm::scale(model, glm::vec3(size));
     glm::mat4 view; 
     view = glm::lookAt(cameraPos, cameraPos + cameraFront,cameraUp);
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f); 
