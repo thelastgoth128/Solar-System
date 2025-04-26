@@ -72,6 +72,10 @@ void Planet::Draw(glm::mat4 view, glm::mat4 projection) {
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES,sphere.getIndexCount(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
+    if (parent) {
+        std::vector<glm::vec3> orbitPoints = generateOrbitPoints(parent->position, orbitRadius, orbitSegments);
+        setupOrbitVAO(orbitPoints, orbitVAO, orbitVBO);
+    }
 }
 
 void Planet::LoadTexture() {
@@ -101,16 +105,7 @@ void Planet::LoadTexture() {
     stbi_image_free(data); 
 }
 
-void Planet::Orbit(float orbitAngle, float rotationAngle) {
-
-}
-
-void Planet::UpdateRotation(float deltaTime) {
-    rotationAngle += rotationSpeed * deltaTime;
-    if (rotationAngle >= 360.0f) rotationAngle -= 360.0f;
-}
-
-void Planet::UpdatePosition(float deltaTime) {  
+void Planet::Orbit(float deltaTime) {
     orbitAngle += orbitSpeed * deltaTime;
     if (orbitAngle >= 360.0f) {
         orbitAngle -= 360.0f;
@@ -123,4 +118,52 @@ void Planet::UpdatePosition(float deltaTime) {
         position.z = parentPos.z + orbitRadius * sin(glm::radians(orbitAngle));
     }
 
+    rotationAngle += rotationSpeed * deltaTime;
+    if (rotationAngle >= 360.0f) rotationAngle -= 360.0f;
 }
+
+std::vector<glm::vec3>Planet::generateOrbitPoints(glm::vec3 parentPosition, float orbitRadius, int segments) {
+    std::vector<glm::vec3> points;
+    for (int i = 0; i < segments; ++i) {
+        float angle = glm::radians((360.0f / segments) * i);
+        float x = parentPosition.x + orbitRadius * cos(angle);
+        float z = parentPosition.z + orbitRadius * sin(angle);
+        points.emplace_back(glm::vec3(x, parentPosition.y, z)); // Flat orbit path
+    }
+    return points;
+}
+
+void Planet::setupOrbitVAO(std::vector<glm::vec3>& orbitPoints, GLuint& VAO, GLuint& VBO) {
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+
+    glBindVertexArray(VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, orbitPoints.size() * sizeof(glm::vec3), orbitPoints.data(), GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glBindVertexArray(0); // Unbind VAO
+}
+
+void Planet::drawOrbit(glm::mat4 view, glm::mat4 projection, GLuint shaderID) {
+    if (parent) {
+        drawOrbit(orbitVAO, orbitSegments, view, projection, shaderID);
+    }
+}
+
+void Planet::drawOrbit(GLuint orbitVAO, int segments, glm::mat4 view, glm::mat4 projection, GLuint shaderID) {
+    glUseProgram(shaderID);
+
+    glm::mat4 model = glm::mat4(1.0f); // Identity matrix for orbit path
+    glUniformMatrix4fv(glGetUniformLocation(shaderID, "model"), 1, GL_FALSE, glm::value_ptr(model));
+    glUniformMatrix4fv(glGetUniformLocation(shaderID, "view"), 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(glGetUniformLocation(shaderID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
+    glBindVertexArray(orbitVAO);
+    glDrawArrays(GL_LINE_LOOP, 0, segments);
+    glBindVertexArray(0);
+}
+

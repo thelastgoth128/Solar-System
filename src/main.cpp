@@ -94,7 +94,7 @@ int main () {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Solar-System", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(1920, 1080, "Solar-System", NULL, NULL);
     if (window == NULL) {
         cout << "Failed to create GLFW window" << endl;
         glfwTerminate();
@@ -107,7 +107,7 @@ int main () {
         return -1;
     }
 
-    glViewport(0, 0, 800, 600);
+    glViewport(0, 0, 1920, 1080);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glEnable(GL_DEPTH_TEST);
 
@@ -117,7 +117,8 @@ int main () {
     Planet Venus("Venus","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\venusmap.jpg",0.8f,8.0f,8.0f,10.0f,&Sun,ourShader.ID);
     Planet Earth("Earth","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\earthmap1k.jpg",1.4f,12.0f,6.0f,15.0f,&Sun,ourShader.ID);
     Planet Moon("Moon","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\venusmap.jpg",0.2f,4.0f,8.0f,10.0f,&Earth,ourShader.ID);
-
+    Planet Mars("Mars","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\marsmap1k.jpg",1.7f,18.0f,4.0f,20.0f,&Earth,ourShader.ID);
+    
     while(!glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
@@ -135,23 +136,25 @@ int main () {
         view = glm::lookAt(cameraPos, cameraPos + cameraFront,cameraUp);
         glm::mat4 projection = glm::perspective(glm::radians(Zoom), 800.0f / 600.0f, 0.1f, 100.0f); 
 
-        Sun.UpdatePosition(deltaTime);
-        Mercury.UpdatePosition(deltaTime);
-        Venus.UpdatePosition(deltaTime);
-        Earth.UpdatePosition(deltaTime);
-        Moon.UpdatePosition(deltaTime);
+        Sun.Orbit(deltaTime);
+        Mercury.Orbit(deltaTime);
+        Venus.Orbit(deltaTime);
+        Earth.Orbit(deltaTime);
+        Moon.Orbit(deltaTime);
+        Mars.Orbit(deltaTime);
 
-        Sun.UpdateRotation(deltaTime);
-        Mercury.UpdateRotation(deltaTime);
-        Venus.UpdateRotation(deltaTime); 
-        Earth.UpdateRotation(deltaTime);
-        Moon.UpdateRotation(deltaTime);
+        Sun.drawOrbit(view, projection, ourShader.ID);
+        Mercury.drawOrbit(view, projection, ourShader.ID);
+        Venus.drawOrbit(view, projection, ourShader.ID);
+        Earth.drawOrbit(view, projection, ourShader.ID);
+        Mars.drawOrbit(view, projection, ourShader.ID);
 
         Sun.Draw(view, projection);
         Mercury.Draw(view, projection);
         Venus.Draw(view,projection);
         Earth.Draw(view, projection);
         Moon.Draw(view, projection);
+        Mars.Draw(view, projection);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
