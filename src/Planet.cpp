@@ -53,24 +53,17 @@ Planet::~Planet() {
     cout << "Destroyed planet" << endl; 
 }
 
-void Planet::Draw() {
+void Planet::Draw(glm::mat4 view, glm::mat4 projection) {
     glUseProgram(shaderID);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
     glUniform1i(glGetUniformLocation(shaderID,"texture"), 0);
 
-    glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-    glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-    glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
     glm::mat4 model = glm::mat4(1.0f); 
     model = glm::translate(model, glm::vec3(position)); 
     model = glm::rotate(model, glm::radians(rotationAngle), glm::vec3(0.0f, 1.0f, 0.0f)); 
     model = glm::scale(model, glm::vec3(size));
-    glm::mat4 view; 
-    view = glm::lookAt(cameraPos, cameraPos + cameraFront,cameraUp);
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f); 
    
     glUniformMatrix4fv(glGetUniformLocation(shaderID, "model"), 1, GL_FALSE, glm::value_ptr(model));
     glUniformMatrix4fv(glGetUniformLocation(shaderID, "view"), 1, GL_FALSE, glm::value_ptr(view));
