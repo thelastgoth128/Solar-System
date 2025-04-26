@@ -31,6 +31,7 @@ int main () {
 
     Shader ourShader("C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\shaders\\vertex.vs","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\shaders\\fragment.fss");
     Planet Sun("Sun","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\sunmap.jpg",1.0f,0.0f,0.2f,0.2f,nullptr,ourShader.ID);
+    Planet Earth("Earth","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\earthmap1k.jpg",0.4f,1.0f,0.3f,0.2f,nullptr,ourShader.ID);
 
     while(!glfwWindowShouldClose(window)) {
 
@@ -38,6 +39,7 @@ int main () {
         glClear(GL_COLOR_BUFFER_BIT);
 
         Sun.Draw();
+        Earth.Draw();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
