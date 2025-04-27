@@ -19,13 +19,13 @@ glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 float deltaTime = 0.0f; //Time between current frame and last frame
 float lastFrame = 0.0f; //Time of last frame
-
+bool animate = true;
 void processInput(GLFWwindow* window) {
     if (glfwGetKey(window,GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window,true);
     }
 
-    const float cameraSpeed = 2.5f * deltaTime; //adjust accordingly
+    const float cameraSpeed = 2.5f * deltaTime;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
         cameraPos += cameraSpeed * cameraFront;
     }
@@ -37,6 +37,25 @@ void processInput(GLFWwindow* window) {
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+        if (animate == true) {
+            animate = false;
+            lastFrame = 0.0f;
+        }
+        else {
+            animate = true;
+            float currentFrame = glfwGetTime();
+            deltaTime = currentFrame - lastFrame;
+            lastFrame = currentFrame;
+        }
+    } 
+    
+    if (animate) {
+        float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
     }
 }
 
@@ -117,12 +136,9 @@ int main () {
     Planet Venus("Venus","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\venusmap.jpg",0.8f,8.0f,8.0f,10.0f,&Sun,ourShader.ID);
     Planet Earth("Earth","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\earthmap1k.jpg",1.4f,12.0f,6.0f,15.0f,&Sun,ourShader.ID);
     Planet Moon("Moon","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\venusmap.jpg",0.2f,4.0f,8.0f,10.0f,&Earth,ourShader.ID);
-    Planet Mars("Mars","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\marsmap1k.jpg",1.7f,18.0f,4.0f,20.0f,&Earth,ourShader.ID);
+    Planet Mars("Mars","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\marsmap1k.jpg",1.7f,18.0f,4.0f,20.0f,&Sun,ourShader.ID);
     
     while(!glfwWindowShouldClose(window)) {
-        float currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
 
         processInput(window);
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -148,6 +164,7 @@ int main () {
         Venus.drawOrbit(view, projection, ourShader.ID);
         Earth.drawOrbit(view, projection, ourShader.ID);
         Mars.drawOrbit(view, projection, ourShader.ID);
+        Moon.drawOrbit(view, projection, ourShader.ID);
 
         Sun.Draw(view, projection);
         Mercury.Draw(view, projection);
