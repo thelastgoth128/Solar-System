@@ -122,13 +122,13 @@ void Planet::Orbit(float deltaTime) {
     if (rotationAngle >= 360.0f) rotationAngle -= 360.0f;
 }
 
-std::vector<glm::vec3>Planet::generateOrbitPoints(glm::vec3 parentPosition, float orbitRadius, int segments) {
+std::vector<glm::vec3>Planet::generateOrbitPoints(glm::vec3 parentPos, float orbitRadius, int segments) {
     std::vector<glm::vec3> points;
     for (int i = 0; i < segments; ++i) {
         float angle = glm::radians((360.0f / segments) * i);
-        float x = parentPosition.x + orbitRadius * cos(angle);
-        float z = parentPosition.z + orbitRadius * sin(angle);
-        points.emplace_back(glm::vec3(x, parentPosition.y, z)); // Flat orbit path
+        float x = parentPos.x + orbitRadius * cos(angle);
+        float z = parentPos.z + orbitRadius * sin(angle);
+        points.emplace_back(glm::vec3(x, parentPos.y, z)); 
     }
     return points;
 }
