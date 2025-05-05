@@ -130,13 +130,15 @@ int main () {
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glEnable(GL_DEPTH_TEST);
 
-    Shader ourShader("C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\shaders\\vertex.vs","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\shaders\\fragment.fss");
-    Planet Sun("Sun","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\sunmap.jpg",2.0f,0.0f,0.0f,2.0f,nullptr,ourShader.ID);
-    Planet Mercury("Mercury","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\mercurymap.jpg",0.4f,4.0f,10.0f,5.0f,&Sun,ourShader.ID);
-    Planet Venus("Venus","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\venusmap.jpg",0.8f,8.0f,8.0f,10.0f,&Sun,ourShader.ID);
-    Planet Earth("Earth","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\earthmap1k.jpg",1.4f,12.0f,6.0f,15.0f,&Sun,ourShader.ID);
-    Planet Moon("Moon","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\venusmap.jpg",0.2f,4.0f,8.0f,10.0f,&Earth,ourShader.ID);
-    Planet Mars("Mars","C:\\Users\\thind\\Documents\\projects\\Solar-System\\src\\resources\\PlanetTextureMaps\\marsmap1k.jpg",1.7f,18.0f,4.0f,20.0f,&Sun,ourShader.ID);
+    Shader ourShader("../src\\resources\\shaders\\vertex.vs","../src\\resources\\shaders\\fragment.fss");
+    Shader moonShader("../src\\resources\\shaders\\vertex.vs","../src\\resources\\shaders\\moonFragment.fss");
+
+    Planet Sun("Sun","../src\\resources\\PlanetTextureMaps\\sunmap.jpg",2.0f,0.0f,0.0f,2.0f,nullptr,ourShader.ID);
+    Planet Mercury("Mercury","../src\\resources\\PlanetTextureMaps\\mercurymap.jpg",0.4f,4.0f,10.0f,5.0f,&Sun,ourShader.ID);
+    Planet Venus("Venus","../src\\resources\\PlanetTextureMaps\\venusmap.jpg",0.8f,8.0f,8.0f,10.0f,&Sun,ourShader.ID);
+    Planet Earth("Earth","../src\\resources\\PlanetTextureMaps\\earthmap1k.jpg",1.4f,12.0f,6.0f,15.0f,&Sun,ourShader.ID);
+    Planet Moon("Moon","../src\\resources\\PlanetTextureMaps\\moonmap1k.jpg",0.2f,4.0f,8.0f,10.0f,&Earth,moonShader.ID);
+    Planet Mars("Mars","../src\\resources\\PlanetTextureMaps\\marsmap1k.jpg",1.7f,18.0f,4.0f,20.0f,&Sun,ourShader.ID);
     
     while(!glfwWindowShouldClose(window)) {
 
@@ -164,7 +166,7 @@ int main () {
         Venus.drawOrbit(view, projection, ourShader.ID);
         Earth.drawOrbit(view, projection, ourShader.ID);
         Mars.drawOrbit(view, projection, ourShader.ID);
-        Moon.drawOrbit(view, projection, ourShader.ID);
+        Moon.drawOrbit(view, projection, moonShader.ID);
 
         Sun.Draw(view, projection);
         Mercury.Draw(view, projection);
