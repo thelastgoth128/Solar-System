@@ -90,8 +90,17 @@ void Planet::LoadTexture() {
     int width,height, nrChannels, width2, height2; 
     unsigned char * data = stbi_load(texturePath, &width, &height, &nrChannels, 0); 
     if (data) {
-        glBindTexture(GL_TEXTURE_2D, texture); 
-        GLenum format = (nrChannels == 4) ? GL_RGBA : GL_RGB; 
+        glBindTexture(GL_TEXTURE_2D, texture);
+        GLenum format; 
+        if (nrChannels == 4) {
+            format = GL_RGBA;
+        }else if (nrChannels == 3) {
+            format = GL_RGB;
+        }else if (nrChannels == 2) {
+            format = GL_RG;
+        }else if (nrChannels == 1) {
+            format = GL_RED;
+        } 
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data); 
         glGenerateMipmap(GL_TEXTURE_2D);
         
