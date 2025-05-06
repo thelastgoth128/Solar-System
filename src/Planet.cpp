@@ -72,6 +72,7 @@ void Planet::Draw(glm::mat4 view, glm::mat4 projection) {
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES,sphere.getIndexCount(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
+
     if (parent) {
         std::vector<glm::vec3> orbitPoints = generateOrbitPoints(parent->position, orbitRadius, orbitSegments);
         setupOrbitVAO(orbitPoints, orbitVAO, orbitVBO);
@@ -173,6 +174,61 @@ void Planet::drawOrbit(GLuint orbitVAO, int segments, glm::mat4 view, glm::mat4 
 
     glBindVertexArray(orbitVAO);
     glDrawArrays(GL_LINE_LOOP, 0, segments);
+    glBindVertexArray(0);
+}
+
+void Planet::drawStars(float size,glm::mat4 view, glm::mat4 projection){
+    
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+
+    glBindVertexArray(VAO);
+
+    // Vertex data (interleaved V/N/T)
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER,sphere.getInterleavedVertexSize(), sphere.getInterleavedVertices(), GL_STATIC_DRAW);
+
+    // Index data
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphere.getIndexSize(), sphere.getIndices(), GL_STATIC_DRAW);
+
+    // Vertex Attributes
+    GLsizei stride = sphere.getInterleavedStride();
+
+    // Position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0);
+    glEnableVertexAttribArray(0);
+
+    // Normal attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    // Texture coord attribute
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+
+    glBindVertexArray(0);
+
+    LoadTexture();
+
+    glUseProgram(shaderID);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glUniform1i(glGetUniformLocation(shaderID,"texture"), 0);
+
+    glm::mat4 model = glm::mat4(1.0f); 
+    model = glm::translate(model, glm::vec3(position)); 
+    model = glm::rotate(model, glm::radians(rotationAngle), glm::vec3(0.0f, 1.0f, 0.0f)); 
+    model = glm::scale(model, glm::vec3(size));
+   
+    glUniformMatrix4fv(glGetUniformLocation(shaderID, "model"), 1, GL_FALSE, glm::value_ptr(model));
+    glUniformMatrix4fv(glGetUniformLocation(shaderID, "view"), 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(glGetUniformLocation(shaderID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES,sphere.getIndexCount(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 

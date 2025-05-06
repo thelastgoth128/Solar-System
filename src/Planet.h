@@ -35,9 +35,10 @@ class Planet {
     void LoadTexture();
     void Orbit(float deltaTime);
     GLuint orbitVAO, orbitVBO;
-int orbitSegments = 100;
-void drawOrbit(GLuint orbitVAO, int segments, glm::mat4 view, glm::mat4 projection, GLuint shaderID);
-void setupOrbitVAO(std::vector<glm::vec3>& orbitPoints, GLuint& VAO, GLuint& VBO);
-std::vector<glm::vec3> generateOrbitPoints(glm::vec3 parentPosition, float orbitRadius, int segments);
-void drawOrbit(glm::mat4 view, glm::mat4 projection, GLuint shaderID) ;
+    int orbitSegments = 100;
+    void drawOrbit(GLuint orbitVAO, int segments, glm::mat4 view, glm::mat4 projection, GLuint shaderID);
+    void setupOrbitVAO(std::vector<glm::vec3>& orbitPoints, GLuint& VAO, GLuint& VBO);
+    std::vector<glm::vec3> generateOrbitPoints(glm::vec3 parentPosition, float orbitRadius, int segments);
+    void drawOrbit(glm::mat4 view, glm::mat4 projection, GLuint shaderID) ;
+    void drawStars(float size,glm::mat4 view, glm::mat4 projection);
 };
