@@ -132,13 +132,15 @@ int main () {
 
     Shader ourShader("../src\\resources\\shaders\\vertex.vs","../src\\resources\\shaders\\fragment.fss");
     Shader moonShader("../src\\resources\\shaders\\vertex.vs","../src\\resources\\shaders\\moonFragment.fss");
+    Shader pathShader("../src\\resources\\shaders\\vertex.vs","../src\\resources\\shaders\\pathFragment.fss");
 
-    Planet Sun("Sun","../src\\resources\\PlanetTextureMaps\\sunmap.jpg",2.0f,0.0f,0.0f,2.0f,nullptr,ourShader.ID);
+    Planet Sun("Sun","../src\\resources\\PlanetTextureMaps\\sunmap.jpg",2.0f,0.0f,0.0f,3.0f,nullptr,ourShader.ID);
     Planet Mercury("Mercury","../src\\resources\\PlanetTextureMaps\\mercurymap.jpg",0.4f,4.0f,10.0f,5.0f,&Sun,ourShader.ID);
     Planet Venus("Venus","../src\\resources\\PlanetTextureMaps\\venusmap.jpg",0.8f,8.0f,8.0f,10.0f,&Sun,ourShader.ID);
     Planet Earth("Earth","../src\\resources\\PlanetTextureMaps\\earthmap1k.jpg",1.4f,12.0f,6.0f,15.0f,&Sun,ourShader.ID);
-    Planet Moon("Moon","../src\\resources\\PlanetTextureMaps\\moonmap1k.jpg",0.2f,4.0f,8.0f,10.0f,&Earth,moonShader.ID);
+    Planet Moon("Moon","../src\\resources\\PlanetTextureMaps\\moonmap1k.jpg",0.2f,2.0f,8.0f,10.0f,&Earth,moonShader.ID);
     Planet Mars("Mars","../src\\resources\\PlanetTextureMaps\\marsmap1k.jpg",1.7f,18.0f,4.0f,20.0f,&Sun,ourShader.ID);
+    Planet Stars("Stars","../src\\resources\\PlanetTextureMaps\\Stars.jpg",2.0f,12.0f,5.0f,50.0f,&Sun,ourShader.ID);
     
     while(!glfwWindowShouldClose(window)) {
 
@@ -152,7 +154,10 @@ int main () {
 
         glm::mat4 view; 
         view = glm::lookAt(cameraPos, cameraPos + cameraFront,cameraUp);
-        glm::mat4 projection = glm::perspective(glm::radians(Zoom), 800.0f / 600.0f, 0.1f, 100.0f); 
+        glm::mat4 projection = glm::perspective(glm::radians(Zoom), 800.0f / 600.0f, 0.1f, 100.0f);
+
+        Stars.drawStars(40,view, projection);
+        
 
         Sun.Orbit(deltaTime);
         Mercury.Orbit(deltaTime);
@@ -161,16 +166,16 @@ int main () {
         Moon.Orbit(deltaTime);
         Mars.Orbit(deltaTime);
 
-        Sun.drawOrbit(view, projection, ourShader.ID);
-        Mercury.drawOrbit(view, projection, ourShader.ID);
-        Venus.drawOrbit(view, projection, ourShader.ID);
-        Earth.drawOrbit(view, projection, ourShader.ID);
-        Mars.drawOrbit(view, projection, ourShader.ID);
+        Sun.drawOrbit(view, projection, pathShader.ID);
+        Mercury.drawOrbit(view, projection, pathShader.ID);
+        Venus.drawOrbit(view, projection, pathShader.ID);
+        Earth.drawOrbit(view, projection, pathShader.ID);
+        Mars.drawOrbit(view, projection, pathShader.ID);
         Moon.drawOrbit(view, projection, moonShader.ID);
 
         Sun.Draw(view, projection);
         Mercury.Draw(view, projection);
-        Venus.Draw(view,projection);
+        Venus.Draw(view, projection);
         Earth.Draw(view, projection);
         Moon.Draw(view, projection);
         Mars.Draw(view, projection);
