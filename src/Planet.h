@@ -41,4 +41,6 @@ class Planet {
     std::vector<glm::vec3> generateOrbitPoints(glm::vec3 parentPosition, float orbitRadius, int segments);
     void drawOrbit(glm::mat4 view, glm::mat4 projection, GLuint shaderID) ;
     void drawStars(float size,glm::mat4 view, glm::mat4 projection);
+    void updateRotation(float rotationSpeed);
+    void updateOrbitSpeed (float orbitSpeed);
 };
