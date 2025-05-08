@@ -195,6 +195,29 @@ int main () {
 
         Stars.drawStars(40,view, projection);
         
+        glm::vec3 lightDir = glm::normalize(glm::vec3(-1.0f, -1.0f, 0.0f));
+        glUniform3fv(glGetUniformLocation(ourShader.ID,"lightDir"), 1,glm::value_ptr(lightDir));
+
+        glm::vec3 pointBlueLight = glm::vec3(0.0f, 0.8f, 0.0f);
+        glUniform3fv(glGetUniformLocation(ourShader.ID,"pointBlueLight"), 1, glm::value_ptr(pointBlueLight));
+
+        glm::vec3 Ld = glm::vec3(1.0f, 1.0f, 0.0f);
+        glUniform3fv(glGetUniformLocation(ourShader.ID, "Ld"), 1, glm::value_ptr(Ld));
+
+        glm::vec3 La = glm::vec3(1.0, 1.0f, 0.0f);
+        glUniform3fv(glGetUniformLocation(ourShader.ID, "La"), 1, glm::value_ptr(La));
+        
+        glm::vec3 Ls = glm::vec3(1.0f, 1.0f, 0.0f);
+        glUniform3fv(glGetUniformLocation(ourShader.ID,"Ls"), 1, glm::value_ptr(Ls));
+
+        glm::vec3 md = glm::vec3(0.5f, 1.0f, 0.6);
+        glUniform3fv(glGetUniformLocation(ourShader.ID,"md"), 1, glm::value_ptr(md));
+
+        glm::vec3 ma = glm::vec3(0.8f, 0.8f, 0.8f);
+        glUniform3fv(glGetUniformLocation(ourShader.ID, "ma"), 1, glm::value_ptr(ma));
+
+        glm::vec3 ms = glm::vec3(1.0f, 0.5f, 0.5f);
+        glUniform3fv(glGetUniformLocation(ourShader.ID, "ms"), 1, glm::value_ptr(ms));
 
         Sun.Orbit(deltaTime);
         Mercury.Orbit(deltaTime);
