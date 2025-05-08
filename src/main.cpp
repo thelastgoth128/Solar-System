@@ -1,3 +1,18 @@
+///////////////////////////////////////////////////////////////////////////////
+// main.cpp
+// ==========
+// most implementation of this code area originates from the book "Learn opengl- graphics programming by joey de Vries"
+// source for texture Planet textures From: https://planetpixelemporium.com/planets.html 
+// Main function that has the render loop
+// processInput function to process inputs like ESC, up,down,left,right and space keys
+// framebufferSizecallback to resize the viewport
+// mouse callback function to get mouse inputs mainly to move the camera
+//
+//  AUTHOR: CYRUS THINDWA(thindwacyrus86@gmail.com)
+// CREATED: 2025-07-05
+///////////////////////////////////////////////////////////////////////////////
+
+
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 #include <iostream>
