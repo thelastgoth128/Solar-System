@@ -35,9 +35,31 @@ glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 float deltaTime = 0.0f; //Time between current frame and last frame
 float lastFrame = 0.0f; //Time of last frame
 bool animate = true;
+float sunRotate = 3.0f;
+float moonSpeed = 8.0f;
+
 void processInput(GLFWwindow* window) {
     if (glfwGetKey(window,GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window,true);
+    }
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+        sunRotate += 10.0f;
+
+    }    
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+        sunRotate -= 10.0f;
+        if (sunRotate <= 0.0f ){
+            sunRotate = 0.0f;
+        }
+    }
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+        moonSpeed += 10.0f;
+    }    
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+        moonSpeed -= 10.0f;
+        if (moonSpeed <= 0.0f) {
+            moonSpeed = 0.0f;
+        }
     }
 
     const float cameraSpeed = 2.5f * deltaTime;
