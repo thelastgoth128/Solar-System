@@ -193,8 +193,8 @@ int main () {
         view = glm::lookAt(cameraPos, cameraPos + cameraFront,cameraUp);
         glm::mat4 projection = glm::perspective(glm::radians(Zoom), 800.0f / 600.0f, 0.1f, 100.0f);
 
-        Stars.drawStars(40,view, projection);
-        
+        Stars.drawStars(60,view, projection);
+
         glm::vec3 lightDir = glm::normalize(glm::vec3(-1.0f, -1.0f, 0.0f));
         glUniform3fv(glGetUniformLocation(ourShader.ID,"lightDir"), 1,glm::value_ptr(lightDir));
 

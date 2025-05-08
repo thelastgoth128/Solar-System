@@ -1,3 +1,25 @@
+///////////////////////////////////////////////////////////////////////////////
+// Planet.cpp
+// ==========
+//Most implementantion was inspired from the youtube video "https://youtu.be/22pcxHjbqOM?si=_ICO4rmXhBcVKlDy"
+// source for sphere From: https://songho.ca/opengl/gl_sphere.html  
+// Planet constructor that initializes the planet attributes, initializes the buffers and loads textures
+// Planet deconstructor to destroy the planets
+// Draw function = gets view and projection matrices as inputs and computes th model matrix then loads then into shader
+// the Draw function also draw the sphere with appropriate texture then computes orbitsPoints
+// LoadTexture function loads the texture, computes its channels and passes it to the shader 
+// Orbit function handles both orbit and rotation for every initiated planet
+// UpadteRotation gets the speed as input the update the rotation speed 
+// UpdateOrbit speed updates the orbit speed of a planet
+// generateOrbitPoints given a parent position it computes the orbit points code example form youtube "https://youtu.be/Wq_VmYKqMzg?si=-C2e2mFyDB1lCKHH"
+// drawOrbit checks if the planet has a parent then calls the drawOrbit function
+// drawOrbit draws the paths
+// drawStars draws the sphere with a star texture
+//
+//  AUTHOR: CYRUS THINDWA (thindwacyrus86@gmail.com)
+// CREATED: 2025-05-07
+///////////////////////////////////////////////////////////////////////////////
+
 #include "Planet.h"
 
 Planet::Planet(string name,const char* texturePath, float size, float orbitRadius, float orbitSpeed, float rotationSpeed, Planet* parent,GLuint shaderID) {
@@ -130,6 +152,14 @@ void Planet::Orbit(float deltaTime) {
 
     rotationAngle += rotationSpeed * deltaTime;
     if (rotationAngle >= 360.0f) rotationAngle -= 360.0f;
+}
+
+void Planet::updateRotation(float Speed) {
+    rotationSpeed = Speed;
+}
+
+void Planet::updateOrbitSpeed(float speed) {
+    orbitSpeed = speed;
 }
 
 std::vector<glm::vec3>Planet::generateOrbitPoints(glm::vec3 parentPos, float orbitRadius, int segments) {
