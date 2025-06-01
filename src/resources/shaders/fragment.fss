@@ -4,7 +4,7 @@ in vec3 Normal;
 in vec2 aTexCoord;
 in vec3 FragPos;
 
-uniform sampler2D texture;
+uniform sampler2D texSample;
 uniform vec3 lightDir;
 uniform vec3 pointBlueLight;
 uniform vec3 viewPos;
@@ -19,7 +19,7 @@ float rho = 32.0;
 
 void main() 
 {
-    vec3 texColor = texture(texture, aTexCoord).rgb;
+    vec3 texColor = texture(texSample, aTexCoord).rgb;
 
     vec3 norm = normalize(Normal);
     vec3 lightVector = normalize(pointBlueLight - FragPos);

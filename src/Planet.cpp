@@ -21,6 +21,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "Planet.h"
+#define STB_IMAGE_IMPLEMENTATION 
+#include "../dependencies/include/stb_image.h"
 
 Planet::Planet(string name,const char* texturePath, float size, float orbitRadius, float orbitSpeed, float rotationSpeed, Planet* parent,GLuint shaderID) {
     this->name = name;
@@ -71,8 +73,9 @@ Planet::Planet(string name,const char* texturePath, float size, float orbitRadiu
 }
 
 Planet::~Planet() {
-    glDeleteTextures(1, &texture); 
-    cout << "Destroyed planet" << endl; 
+    glDeleteTextures(1, &texture);
+
+    cout << "deleting a planet" << endl;
 }
 
 void Planet::Draw(glm::mat4 view, glm::mat4 projection) {
@@ -80,7 +83,7 @@ void Planet::Draw(glm::mat4 view, glm::mat4 projection) {
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
-    glUniform1i(glGetUniformLocation(shaderID,"texture"), 0);
+    glUniform1i(glGetUniformLocation(shaderID,"texSample"), 0);
 
     glm::mat4 model = glm::mat4(1.0f); 
     model = glm::translate(model, glm::vec3(position)); 
@@ -110,8 +113,9 @@ void Planet::LoadTexture() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
     
     stbi_set_flip_vertically_on_load(true); 
-    int width,height, nrChannels, width2, height2; 
+    int width,height, nrChannels; 
     unsigned char * data = stbi_load(texturePath, &width, &height, &nrChannels, 0); 
+
     if (data) {
         glBindTexture(GL_TEXTURE_2D, texture);
         GLenum format; 
@@ -133,6 +137,7 @@ void Planet::LoadTexture() {
 
     } else { 
         cout << "Failed to load texture1" << endl; 
+
     } 
     stbi_image_free(data); 
 }

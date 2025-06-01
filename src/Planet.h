@@ -1,13 +1,11 @@
 #pragma once
 #include <iostream>
-#include "glad/glad.h"
+#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "resources/Sphere/Sphere.cpp"
+#include "resources/Sphere/Sphere.h"
 #include "resources/shaders/shader.h"
-#define STB_IMAGE_IMPLEMENTATION 
-#include "stb_image.h"
 
 using namespace std;
 

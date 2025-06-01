@@ -12,12 +12,12 @@
 // CREATED: 2025-07-05
 ///////////////////////////////////////////////////////////////////////////////
 
-
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <iostream>
-#include "resources/shaders/shader.cpp"
-#include "Planet.cpp"
+#include "./resources/shaders/shader.h"
+#include "./Planet.h"
+#include "./resources/Timer/Timer.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -31,6 +31,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+Timer timer;
 
 float deltaTime = 0.0f; //Time between current frame and last frame
 float lastFrame = 0.0f; //Time of last frame
@@ -79,21 +81,15 @@ void processInput(GLFWwindow* window) {
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
         if (animate == true) {
             animate = false;
-            lastFrame = 0.0f;
+            timer.stop();
+            deltaTime = 0.0;
         }
         else {
             animate = true;
-            float currentFrame = glfwGetTime();
-            deltaTime = currentFrame - lastFrame;
-            lastFrame = currentFrame;
+           timer.start();
         }
     } 
-    
-    if (animate) {
-        float currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
-    }
+
 }
 
 
@@ -143,7 +139,6 @@ void scroll_callback(GLFWwindow * window, double xoffset, double yoffset) {
     
 }
 
-
 int main () {
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -167,19 +162,29 @@ int main () {
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glEnable(GL_DEPTH_TEST);
 
-    Shader ourShader("../src\\resources\\shaders\\vertex.vs","../src\\resources\\shaders\\fragment.fss");
-    Shader moonShader("../src\\resources\\shaders\\vertex.vs","../src\\resources\\shaders\\moonFragment.fss");
-    Shader pathShader("../src\\resources\\shaders\\vertex.vs","../src\\resources\\shaders\\pathFragment.fss");
+    Shader ourShader("../src/resources/shaders/vertex.vs","../src/resources/shaders/fragment.fss");
+    Shader moonShader("../src/resources/shaders/vertex.vs","../src/resources/shaders/moonFragment.fss");
+    Shader pathShader("../src/resources/shaders/vertex.vs","../src/resources/shaders/pathFragment.fss");
 
-    Planet Sun("Sun","../src\\resources\\PlanetTextureMaps\\sunmap.jpg",2.0f,0.0f,0.0f,5.0f,nullptr,ourShader.ID);
-    Planet Mercury("Mercury","../src\\resources\\PlanetTextureMaps\\mercurymap.jpg",0.4f,4.0f,10.0f,10.0f,&Sun,ourShader.ID);
-    Planet Venus("Venus","../src\\resources\\PlanetTextureMaps\\venusmap.jpg",0.8f,8.0f,8.0f,15.0f,&Sun,ourShader.ID);
-    Planet Earth("Earth","../src\\resources\\PlanetTextureMaps\\earthmap1k.jpg",1.4f,12.0f,6.0f,20.0f,&Sun,ourShader.ID);
-    Planet Moon("Moon","../src\\resources\\PlanetTextureMaps\\moonmap1k.jpg",0.2f,2.0f,8.0f,15.0f,&Earth,moonShader.ID);
-    Planet Mars("Mars","../src\\resources\\PlanetTextureMaps\\marsmap1k.jpg",1.7f,18.0f,4.0f,25.0f,&Sun,ourShader.ID);
-    Planet Stars("Stars","../src\\resources\\PlanetTextureMaps\\Stars.jpg",2.0f,12.0f,5.0f,40.0f,&Sun,ourShader.ID);
+    Planet Sun("Sun","../src/resources/PlanetTextureMaps/sunmap.jpg",2.0f,0.0f,0.0f,5.0f,nullptr,ourShader.ID);
+    Planet Mercury("Mercury","../src/resources/PlanetTextureMaps/mercurymap.jpg",0.4f,4.0f,10.0f,10.0f,&Sun,ourShader.ID);
+    Planet Venus("Venus","../src/resources/PlanetTextureMaps/venusmap.jpg",0.8f,8.0f,8.0f,15.0f,&Sun,ourShader.ID);
+    Planet Earth("Earth","../src/resources/PlanetTextureMaps/earthmap1k.jpg",1.4f,12.0f,6.0f,20.0f,&Sun,ourShader.ID);
+    Planet Moon("Moon","../src/resources/PlanetTextureMaps/moonmap1k.jpg",0.2f,2.0f,8.0f,50.0f,&Earth,moonShader.ID);
+    Planet Mars("Mars","../src/resources/PlanetTextureMaps/marsmap1k.jpg",1.7f,18.0f,4.0f,25.0f,&Sun,ourShader.ID);
+    Planet Stars("Stars","../src/resources/PlanetTextureMaps/Stars.jpg",2.0f,12.0f,5.0f,40.0f,&Sun,ourShader.ID);
     
+    timer.start();
+
     while(!glfwWindowShouldClose(window)) {
+
+        if (animate) {
+        timer.stop();
+        deltaTime = timer.getElapsedTimeInSec();
+        timer.start(); 
+        } else {
+        deltaTime = 0.0;
+        }
 
         processInput(window);
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
