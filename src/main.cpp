@@ -177,6 +177,14 @@ int main () {
     timer.start();
 
     while(!glfwWindowShouldClose(window)) {
+        
+        if (animate) {
+        timer.stop();
+        deltaTime = timer.getElapsedTimeInSec();
+        timer.start(); 
+        } else {
+        deltaTime = 0.0;
+        }
 
         processInput(window);
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);

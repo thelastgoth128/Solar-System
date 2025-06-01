@@ -73,9 +73,7 @@ Planet::Planet(string name,const char* texturePath, float size, float orbitRadiu
 }
 
 Planet::~Planet() {
-    glDeleteTextures(1, &texture);
 
-    cout << "deleting a planet" << endl;
 }
 
 void Planet::Draw(glm::mat4 view, glm::mat4 projection) {
